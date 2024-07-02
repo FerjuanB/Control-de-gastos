@@ -42,7 +42,20 @@ export default function ExpenseForm() {
         }
         //agregar gastos
         dispatch({type:"add-expense", payload:{expense}})
+        //reiniciar el state
+        alert("Agregado")
+        
+        setExpense({
+            amount:0,
+        expenseName:'',
+        category:'',
+        date: new Date()
+        })
     }
+
+
+
+
   return (
     <form
     onSubmit={handleSubmit}
@@ -95,6 +108,7 @@ export default function ExpenseForm() {
         {categories.map(category => (
             <option key={category.id} value={category.name}>
                 {category.name}
+
             </option>
         ))}
     </datalist>

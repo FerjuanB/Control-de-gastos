@@ -14,7 +14,7 @@ export default function BudgetTracker() {
         <div className='flex flex-col justify-center items-center gap-8'>
             <button
             type='button'
-            className='bg-orange-400/70 p-2 w-full text-gray-600 uppercase rounded-lg font-bold'
+            className='bg-orange-700 p-2 w-full text-white uppercase rounded-lg font-semibold'
             >
                 Resetear App
             </button>
