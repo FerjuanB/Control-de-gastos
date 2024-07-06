@@ -29,6 +29,9 @@ export default function ExpenseForm() {
       
     }, [state.editingId])
     
+    const isCategoryValid = (category: string): boolean => {
+        return categories.some(c => c.name.toLowerCase() === category.toLowerCase());
+      };
     const handleChangeDate = (value : Value)=>{
             setExpense({
                 ...expense,
@@ -36,15 +39,31 @@ export default function ExpenseForm() {
             })
     }
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement> ) =>{
-        const {name, value} = e.target
-        const isAmountField = ['amount'].includes(name)
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const isAmountField = ['amount'].includes(name);
+        const newValue = isAmountField ? +value : value;
+      
         setExpense({
-            ...expense,
-            [name] : isAmountField? +value : value
-            
-        })
-    }
+          ...expense,
+          [name]: newValue,
+        });
+      
+        if (name === 'category' && value !== '' && !isCategoryValid(value)) {
+          setError('Por favor, selecciona una categoría válida');
+        } else if (name === 'amount') {
+          const newAmount = +value;
+          if (!remainingBudget && !prevAmount) {
+            setError('No hay dinero disponible');
+          } else if ((newAmount - prevAmount) > remainingBudget) {
+            setError(`El gasto supera el disponible. Solamente tiene $ ${remainingBudget} disponibles`);
+          } else {
+            setError('');
+          }
+        } else {
+          setError('');
+        }
+      };
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
@@ -56,6 +75,11 @@ export default function ExpenseForm() {
         if(!remainingBudget && !prevAmount) {
             setError(`No hay dinero disponible` )
             return
+        }
+        //validar que el input sea una categoria valida 
+        if (!isCategoryValid(expense.category)) {
+            setError('Por favor, selecciona una categoría válida');
+            return;
         }
         if((expense.amount - prevAmount) > remainingBudget) {
             setError(` El gasto supera el disponible. Solamente tiene $ ${remainingBudget} disponibles` )
